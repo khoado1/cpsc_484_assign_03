@@ -1,0 +1,31 @@
+{
+    "configurations": [
+        {
+            "name": "macOS",
+            "includePath": [
+                "${workspaceFolder}/editor-484/include",
+                "${workspaceFolder}/editor-484/include/imgui",
+                "${workspaceFolder}/editor-484/include/tinydialog",
+                "${workspaceFolder}/editor-484/include/glad",
+                "${workspaceFolder}/editor-484/src",
+                "${workspaceFolder}/editor-484/src/imgui",
+                "${workspaceFolder}/editor-484/src/imgui/backends",
+                "${workspaceFolder}/editor-484/src/stb",
+                "/opt/homebrew/include",
+                "/usr/local/include",
+                "/opt/local/include"
+            ],
+            "defines": [
+                "GLM_ENABLE_EXPERIMENTAL"
+            ],
+            "macFrameworkPath": [
+                "/System/Library/Frameworks",
+                "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"
+            ],
+            "compilerPath": "/usr/bin/clang++",
+            "cStandard": "c17",
+            "cppStandard": "c++11"
+        }
+    ],
+    "version": 4
+}
