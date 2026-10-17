@@ -56,7 +56,41 @@ bool parseObj(std::istream& in, ObjMesh& out) {
     // 1-based and may be negative (counting back from the end).
     // Resolve each vt index to a coordinate here and push one per corner,
     // so faces keep their stride of 2 (vertex, normal).
-    (void)in;
+    //(void)in;
     out = ObjMesh();
+    std::string line;
+    while (std::getline(in, line)) {
+        std::istringstream iss(line);
+        std::string token;
+        iss >> token;
+        if (token == "v") {
+            glm::vec3 vertex;
+            iss >> vertex.x >> vertex.y >> vertex.z;
+            out.vertices.push_back(vertex);
+        } else if (token == "vn") {
+            glm::vec3 normal;
+            iss >> normal.x >> normal.y >> normal.z;
+            out.normals.push_back(normal);
+        } else if (token == "vt") {
+            glm::vec2 texCoord;
+            iss >> texCoord.x >> texCoord.y;
+            out.texCoords.push_back(texCoord);
+            out.hasTexCoords = true;
+        } else if (token == "f") {
+            std::vector<int> face;
+            std::string corner;
+            while (iss >> corner) {
+                int vi, ti, ni;
+                parseCorner(corner, out.vertices.size(), out.texCoords.size(), out.normals.size(), vi, ti, ni);
+                face.push_back(vi);
+                face.push_back(ni);
+                if (out.hasTexCoords) {
+                    face.push_back(ti);
+                }
+            }
+            out.faces.push_back(face);
+        }
+    }   
+
     return false;
 }
