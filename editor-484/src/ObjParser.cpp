@@ -77,9 +77,8 @@ bool parseObj(std::istream& in, ObjMesh& out) {
             glm::vec2 texCoord;
             iss >> texCoord.x >> texCoord.y;
             texTable.push_back(texCoord);
-
             out.texCoords.push_back(texCoord);
-            out.hasTexCoords = true;
+            //out.hasTexCoords = true;
         } else if (token == "f") {
             std::vector<std::string> fields;
             std::string field;
@@ -98,22 +97,44 @@ bool parseObj(std::istream& in, ObjMesh& out) {
                 face.push_back(ni);
 
                 glm::vec2 uv(0.0f, 0.0f);
-                uv = texTable[ti];
-                sawuv = true;
+                if (ti >= 0 && static_cast<size_t>(ti) < texTable.size()) {
+                    uv = texTable[ti];
+                    sawuv = true;
+                }
                 uvs.push_back(uv);
             }
 
+            if (face.size() == 6) {  // three (vertex, normal) pairs
+                const glm::vec3& p0 = out.vertices[face[0]];
+                const glm::vec3& p1 = out.vertices[face[2]];
+                const glm::vec3& p2 = out.vertices[face[4]];
+
+                glm::vec3 normal = glm::cross(p1 - p0, p2 - p0);
+                const float length = glm::length(normal);
+                if (length > 1e-8f) {
+                    normal /= length;
+                } else {
+                    normal = glm::vec3(0.0f, 0.0f, 1.0f);
+                }
+
+                const int generatedNormalIndex = static_cast<int>(out.normals.size());
+                out.normals.push_back(normal);
+
+                for (int corner = 0; corner < 3; ++corner) {
+                    if (face[corner * 2 + 1] < 0) {
+                        face[corner * 2 + 1] = generatedNormalIndex;
+                    }
+                }
+            }
+            
             out.faces.push_back(face);
             out.texCoords.insert(out.texCoords.end(), uvs.begin(), uvs.end());
-            // out.texCoords.push_back(uvs[0]); 
-            // out.texCoords.push_back(uvs[1]); 
-            // out.texCoords.push_back(uvs[2]);
             if (sawuv) {
                 out.hasTexCoords = true;
             }
 
         }
-    }   
+    }
 
     return !out.vertices.empty() && !out.faces.empty();
 }

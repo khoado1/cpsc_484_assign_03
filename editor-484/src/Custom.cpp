@@ -53,11 +53,112 @@ void Custom::setupCustom() {
     // What is here is a placeholder square so the editor runs and the Insert
     // menu does something visible. Read src/Torus.cpp first -- it is the
     // worked example of a procedural shape.
-    vertices = { {-0.5f, -0.5f, 0.0f}, { 0.5f, -0.5f, 0.0f},
-                 { 0.5f,  0.5f, 0.0f}, {-0.5f,  0.5f, 0.0f} };
-    normals  = { {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f},
-                 {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f} };
-    faces    = { {0, 1, 2}, {0, 2, 3} };
+    vertices = {
+        // Front
+        { 0.5f,  1.5f,  0.5f},  // 0
+        { 0.5f,  0.5f,  0.5f},  // 1
+        { 1.5f,  0.5f,  0.5f},  // 2
+        { 1.5f, -0.5f,  0.5f},  // 3
+        { 0.5f, -0.5f,  0.5f},  // 4
+        { 0.5f, -1.5f,  0.5f},  // 5
+        {-0.5f, -1.5f,  0.5f},  // 6
+        {-0.5f, -0.5f,  0.5f},  // 7
+        {-1.5f, -0.5f,  0.5f},  // 8
+        {-1.5f,  0.5f,  0.5f},  // 9
+        {-0.5f,  0.5f,  0.5f},  // 10
+        {-0.5f,  1.5f,  0.5f},  // 11
+
+        // Back
+        { 0.5f,  1.5f, -0.5f},  // 12
+        { 0.5f,  0.5f, -0.5f},  // 13
+        { 1.5f,  0.5f, -0.5f},  // 14
+        { 1.5f, -0.5f, -0.5f},  // 15
+        { 0.5f, -0.5f, -0.5f},  // 16
+        { 0.5f, -1.5f, -0.5f},  // 17
+        {-0.5f, -1.5f, -0.5f},  // 18
+        {-0.5f, -0.5f, -0.5f},  // 19
+        {-1.5f, -0.5f, -0.5f},  // 20
+        {-1.5f,  0.5f, -0.5f},  // 21
+        {-0.5f,  0.5f, -0.5f},  // 22
+        {-0.5f,  1.5f, -0.5f}   // 23
+    };
+        
+    normals = {
+        { 0.0f,  0.0f,  1.0f},  // Front
+        { 0.0f,  0.0f, -1.0f},  // Back
+
+        { 1.0f,  0.0f,  0.0f},  // Right
+        {-1.0f,  0.0f,  0.0f},  // Left
+
+        { 0.0f,  1.0f,  0.0f},  // Up
+        { 0.0f, -1.0f,  0.0f}   // Down
+    };
+
+    faces = {
+        // Front (+Z)
+        { 0, 10,  1},  // face 00 - Front
+        { 0, 11, 10},  // face 01 - Front
+        {10,  8,  7},  // face 02 - Front
+        {10,  9,  8},  // face 03 - Front
+        { 1,  7,  4},  // face 04 - Front
+        { 1, 10,  7},  // face 05 - Front
+        { 2,  4,  3},  // face 06 - Front
+        { 2,  1,  4},  // face 07 - Front
+        { 4,  6,  5},  // face 08 - Front
+        { 4,  7,  6},  // face 09 - Front
+
+        // Back (-Z)
+        {13, 22, 12},  // face 10 - Back
+        {22, 23, 12},  // face 11 - Back
+        {19, 20, 22},  // face 12 - Back
+        {20, 21, 22},  // face 13 - Back
+        {16, 19, 13},  // face 14 - Back
+        {19, 22, 13},  // face 15 - Back
+        {15, 16, 14},  // face 16 - Back
+        {16, 13, 14},  // face 17 - Back
+        {17, 18, 16},  // face 18 - Back
+        {18, 19, 16},  // face 19 - Back
+
+        // Right (+X)
+        { 0,  1, 13},  // face 20
+        { 0, 13, 12},  // face 21
+
+        { 2,  3, 15},  // face 22
+        { 2, 15, 14},  // face 23
+
+        { 4,  5, 17},  // face 24
+        { 4, 17, 16},  // face 25
+
+        // Left (-X)
+        { 6,  7, 19},  // face 26
+        { 6, 19, 18},  // face 27
+
+        { 8,  9, 21},  // face 28
+        { 8, 21, 20},  // face 29
+
+        {10, 11, 23},  // face 30
+        {10, 23, 22},  // face 31
+
+        // Up (+Y)
+        { 1,  2, 14},  // face 32
+        { 1, 14, 13},  // face 33
+
+        { 9, 10, 22},  // face 34
+        { 9, 22, 21},  // face 35
+
+        {11,  0, 12},  // face 36
+        {11, 12, 23},  // face 37
+
+        // Down (-Y)
+        { 3,  4, 16},  // face 38
+        { 3, 16, 15},  // face 39
+
+        { 5,  6, 18},  // face 40
+        { 5, 18, 17},  // face 41
+
+        { 7,  8, 20},  // face 42
+        { 7, 20, 19}   // face 43
+    };
 
     // The shape's own (u, v) grid parameters, the same way the sphere uses
     // its own. flipU for the same handedness reason as Sphere: a generator that
@@ -89,8 +190,7 @@ void Custom::setupCustom() {
         for (size_t j = 0; usable && j < 3; ++j) {
             const int vi = faces[i][j];
             if (vi < 0 ||
-                vi >= static_cast<int>(vertices.size()) ||
-                vi >= static_cast<int>(normals.size())) {
+                vi >= static_cast<int>(vertices.size())) {
                 usable = false;
             }
         }
@@ -105,7 +205,13 @@ void Custom::setupCustom() {
         for (int j = 0; j < 3; ++j) {
             int vertexIndex = faces[i][j];
             const glm::vec3& position = vertices[vertexIndex];
-            const glm::vec3& normal   = normals[vertexIndex];
+            int normalIndex = i < 10 ? 0 :
+                            i < 20 ? 1 :
+                            i < 26 ? 2 :
+                            i < 32 ? 3 :
+                            i < 38 ? 4 : 5;
+
+            const glm::vec3& normal = normals[normalIndex];
 
             vertexData.insert(vertexData.end(), {position.x, position.y, position.z});
             vertexData.insert(vertexData.end(), {normal.x, normal.y, normal.z});
