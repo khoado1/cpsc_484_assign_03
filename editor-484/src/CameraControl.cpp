@@ -63,7 +63,7 @@ void Camera::orbit(float dTheta, float dPhi) {
     phi += dPhi;    
     phi = glm::clamp(phi, -glm::half_pi<float>() + 0.1f, glm::half_pi<float>() - 0.1f);
     updatePosition();
-    (void)dTheta; (void)dPhi;
+    //(void)dTheta; (void)dPhi;
 
 }
 
@@ -92,7 +92,16 @@ void Camera::pan(float dxScreen, float dyScreen) {
     //   - guard the degenerate case. If the eye ever reaches the target,
     //     `forward` is the zero vector and normalizing the cross product is
     //     NaN. Bail out early when its length is tiny.
-    (void)dxScreen; (void)dyScreen;
+    
+    glm::vec3 forward = target - position;
+    if (glm::length(forward) < 1e-6f) {
+        return; // Degenerate case: eye is at target, cannot pan.
+    }
+    glm::vec3 right = glm::normalize(glm::cross(forward, up));
+    glm::vec3 upDir = glm::normalize(glm::cross(right, forward));
+
+    target += right * dxScreen + upDir * dyScreen;
+    updatePosition();
 }
 
 // -----------------------------------------------------------------------------
@@ -112,5 +121,7 @@ void Camera::zoom(float amount) {
     // is mirrored.
     //
     // Then call updatePosition().
-    (void)amount;
+    radius -= amount;
+    radius = glm::max(radius, 0.5f);
+    updatePosition();
 }
