@@ -96,5 +96,5 @@ bool parseObj(std::istream& in, ObjMesh& out) {
         }
     }   
 
-    return false;
+    return !out.vertices.empty() && !out.faces.empty();
 }
