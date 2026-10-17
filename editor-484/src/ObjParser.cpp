@@ -59,7 +59,7 @@ bool parseObj(std::istream& in, ObjMesh& out) {
     //(void)in;
     out = ObjMesh();
     std::string line;
-    //std::vector<glm::vec2> texTable;
+    std::vector<glm::vec2> texTable;
 
     while (std::getline(in, line)) {
         std::istringstream iss(line);
@@ -76,23 +76,42 @@ bool parseObj(std::istream& in, ObjMesh& out) {
         } else if (token == "vt") {
             glm::vec2 texCoord;
             iss >> texCoord.x >> texCoord.y;
-            //texTable.push_back(texCoord);
+            texTable.push_back(texCoord);
 
             out.texCoords.push_back(texCoord);
             out.hasTexCoords = true;
         } else if (token == "f") {
+            std::vector<std::string> fields;
+            std::string field;
+            while (iss >> field) {
+                fields.push_back(field);
+            }
+
             std::vector<int> face;
-            std::string corner;
-            while (iss >> corner) {
+            std::vector<glm::vec2> uvs;
+            bool sawuv = false;
+
+            for (int k=0; k < 3 && k < fields.size(); ++k) {
                 int vi, ti, ni;
-                parseCorner(corner, out.vertices.size(), out.texCoords.size(), out.normals.size(), vi, ti, ni);
+                parseCorner(fields[k], out.vertices.size(), texTable.size(), out.normals.size(), vi, ti, ni);
                 face.push_back(vi);
                 face.push_back(ni);
-                if (out.hasTexCoords) {
-                    face.push_back(ti);
-                }
+
+                glm::vec2 uv(0.0f, 0.0f);
+                uv = texTable[ti];
+                sawuv = true;
+                uvs.push_back(uv);
             }
+
             out.faces.push_back(face);
+            out.texCoords.insert(out.texCoords.end(), uvs.begin(), uvs.end());
+            // out.texCoords.push_back(uvs[0]); 
+            // out.texCoords.push_back(uvs[1]); 
+            // out.texCoords.push_back(uvs[2]);
+            if (sawuv) {
+                out.hasTexCoords = true;
+            }
+
         }
     }   
 
