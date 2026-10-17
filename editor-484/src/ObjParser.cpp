@@ -59,6 +59,8 @@ bool parseObj(std::istream& in, ObjMesh& out) {
     //(void)in;
     out = ObjMesh();
     std::string line;
+    //std::vector<glm::vec2> texTable;
+
     while (std::getline(in, line)) {
         std::istringstream iss(line);
         std::string token;
@@ -74,6 +76,8 @@ bool parseObj(std::istream& in, ObjMesh& out) {
         } else if (token == "vt") {
             glm::vec2 texCoord;
             iss >> texCoord.x >> texCoord.y;
+            //texTable.push_back(texCoord);
+
             out.texCoords.push_back(texCoord);
             out.hasTexCoords = true;
         } else if (token == "f") {
