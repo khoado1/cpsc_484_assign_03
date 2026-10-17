@@ -58,7 +58,13 @@ void Camera::orbit(float dTheta, float dPhi) {
     //
     // theta is deliberately NOT clamped or wrapped -- yaw is periodic, and
     // cos/sin handle a theta of 400 radians perfectly well.
+
+    theta += dTheta;
+    phi += dPhi;    
+    phi = glm::clamp(phi, -glm::half_pi<float>() + 0.1f, glm::half_pi<float>() - 0.1f);
+    updatePosition();
     (void)dTheta; (void)dPhi;
+
 }
 
 // -----------------------------------------------------------------------------
